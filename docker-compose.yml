@@ -1,0 +1,46 @@
+name: docker
+
+# oh-my-pi's own compose service definition (M-133), same pattern
+# dsh-deploy established: this repo owns the structure (image, volumes,
+# environment); the including compose file (local-ai-machine's
+# docker/docker-compose.yml) supplies only machine-specific VALUES via
+# env vars, through its own .env.
+services:
+  omp:
+    image: ghcr.io/chrisjohnson/oh-my-pi-deploy:${OH_MY_PI_DEPLOY_TAG:-latest}
+    container_name: oh-my-pi
+    user: "1000:1000"
+    tty: true
+    stdin_open: true
+    volumes:
+      # Deliberately scoped to one project, not the whole shared
+      # workspace (unlike dsh's /work) — preserving the exact pre-
+      # extraction scope, not generalizing it.
+      - ${OMP_WORK_DIR}:/work
+      - ${OMP_HOME_DIR}:/home/node/.omp
+      # GitHub App private key (M-133) — read-only, consumed by
+      # docker-entrypoint.sh's credential-helper setup.
+      - ${GITHUB_APP_PRIVATE_KEY_HOST_PATH}:/run/secrets/github-app-agent-key.pem:ro
+      - ${DOCKER_SOCK_PATH:-/var/run/docker.sock}:/var/run/docker.sock
+    network_mode: host
+    group_add:
+      - "${DOCKER_GID:-131}"
+    environment:
+      # Relative name, not absolute: omp resolves the config root as
+      # path.join(os.homedir(), PI_CONFIG_DIR), so ".omp" lands on the
+      # OMP_HOME_DIR mount above.
+      - PI_CONFIG_DIR=.omp
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY}
+      - GITHUB_APP_ID=${GITHUB_APP_ID}
+      - GITHUB_APP_INSTALLATION_ID=${GITHUB_APP_INSTALLATION_ID}
+      - GITHUB_APP_PRIVATE_KEY_PATH=/run/secrets/github-app-agent-key.pem
+    working_dir: /work
+    command: ["omp"]
+    extra_hosts:
+      # Preserved verbatim from the pre-extraction config even though it
+      # looks redundant alongside network_mode: host (which already makes
+      # 127.0.0.1 reach the host directly) — not this extraction's call
+      # to "clean up," see M-133's decision log.
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - litellm
