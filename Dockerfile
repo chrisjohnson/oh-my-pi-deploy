@@ -70,6 +70,19 @@ COPY .omp/agent/models.seed.yml.tmpl /app/.omp/agent/models.seed.yml.tmpl
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
+# GitHub App credential helper (M-133, same mechanism as dsh-deploy, adapted:
+# no gh CLI in this image at all, so only the git credential.helper + URL-
+# rewrite piece applies — no background gh-auth refresh loop needed here).
+# Own small package.json/node_modules tree, since the oh-my-pi install above
+# is a global `bun install -g`, not a local dependency tree this could ride
+# on. Plain `npm ci` (node is already the base image regardless of bun) —
+# root-owned by default here (same as every COPY/RUN in this root block),
+# same as dsh-deploy's own credential-helper install, which confirmed live
+# that default world-readable npm permissions are sufficient for the
+# non-root `node` user to read/execute at runtime.
+COPY credential-helper /app/credential-helper
+RUN cd /app/credential-helper && npm ci --omit=dev && chmod +x github-app-git-credential-helper.mjs
+
 USER node
 
 ENV PATH="/home/node/.bun/bin:${PATH}"

@@ -1,0 +1,8 @@
+{
+  "name": "oh-my-pi-deploy-credential-helper",
+  "private": true,
+  "description": "GitHub App credential helper for oh-my-pi-deploy (M-133) — same mechanism as dsh-deploy, its own small dependency tree since this image has no other local package.json.",
+  "dependencies": {
+    "@octokit/auth-app": "^7.1.5"
+  }
+}
