@@ -46,7 +46,7 @@ if [ ! -f "$MODELS_DIR/config.yml" ]; then
   cp /app/.omp/agent/config.yml "$MODELS_DIR/config.yml"
 fi
 
-# GitHub App credential (M-133, replaces the raw chris_github_key SSH
+# GitHub App credential (replaces the raw chris_github_key SSH
 # mount) — same mechanism as dsh-deploy's entrypoint: a git
 # credential.helper mints a fresh installation token per operation, and
 # an insteadOf rule rewrites SSH-style GitHub URLs to HTTPS first (the

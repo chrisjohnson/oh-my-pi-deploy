@@ -1,6 +1,6 @@
 name: docker
 
-# oh-my-pi's own compose service definition (M-133), same pattern
+# oh-my-pi's own compose service definition, same pattern
 # dsh-deploy established: this repo owns the structure (image, volumes,
 # environment); the including compose file (local-ai-machine's
 # docker/docker-compose.yml) supplies only machine-specific VALUES via
@@ -18,7 +18,7 @@ services:
       # extraction scope, not generalizing it.
       - ${OMP_WORK_DIR}:/work
       - ${OMP_HOME_DIR}:/home/node/.omp
-      # GitHub App private key (M-133) — read-only, consumed by
+      # GitHub App private key — read-only, consumed by
       # docker-entrypoint.sh's credential-helper setup.
       - ${GITHUB_APP_PRIVATE_KEY_HOST_PATH}:/run/secrets/github-app-agent-key.pem:ro
       - ${DOCKER_SOCK_PATH:-/var/run/docker.sock}:/var/run/docker.sock
@@ -39,8 +39,8 @@ services:
     extra_hosts:
       # Preserved verbatim from the pre-extraction config even though it
       # looks redundant alongside network_mode: host (which already makes
-      # 127.0.0.1 reach the host directly) — not this extraction's call
-      # to "clean up," see M-133's decision log.
+      # 127.0.0.1 reach the host directly) — deliberately not simplified
+      # here.
       - "host.docker.internal:host-gateway"
     depends_on:
       - litellm

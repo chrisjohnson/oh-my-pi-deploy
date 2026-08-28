@@ -34,8 +34,8 @@ across all of these vendored-component repos.
 `dsh`, `oh-my-pi`, and `pi-web` share one GitHub App installation for git
 write operations the tool itself performs while running (e.g. `omp`
 committing/pushing code it wrote). `GITHUB_APP_ID` /
-`GITHUB_APP_INSTALLATION_ID` are non-secret (real values on
-`local-ai-machine`'s board card M-131); the private key is a host file
+`GITHUB_APP_INSTALLATION_ID` are non-secret (real values recorded on
+`local-ai-machine`'s board); the private key is a host file
 (`GITHUB_APP_PRIVATE_KEY_HOST_PATH`, `/home/chris/.secrets/github-app-agent-key.pem`
 by convention), mounted read-only, never committed. Permissions:
 Contents/PRs/Actions/Workflows/Pages read-write, Metadata read-only.

@@ -78,7 +78,7 @@ credential from whatever a human or agent session uses to push changes to
 that session is working).
 
 The shared App's `GITHUB_APP_ID` / `GITHUB_APP_INSTALLATION_ID` are non-secret
-values recorded on `local-ai-machine`'s board card M-131. The private key is
+values recorded on `local-ai-machine`'s board. The private key is
 a file on the host (`GITHUB_APP_PRIVATE_KEY_HOST_PATH`, conventionally
 `/home/chris/.secrets/github-app-agent-key.pem`), mounted read-only into the
 container at `/run/secrets/github-app-agent-key.pem` — never committed here.
